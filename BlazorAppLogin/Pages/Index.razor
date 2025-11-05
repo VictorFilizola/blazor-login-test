@@ -1,0 +1,31 @@
+﻿@page "/"
+@attribute [Authorize]
+
+@using System.Security.Principal
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, Windows User!</h1>
+
+Welcome to your new Blazor Server app with Single Sign-On.
+
+@if (windowsIdentity != null)
+{
+    <p class="mt-4">Your Windows Identity is: <strong>@windowsIdentity.Name</strong></p>
+}
+
+@code {
+    private WindowsIdentity? windowsIdentity;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (authenticationStateTask is not null)
+        {
+            var authState = await authenticationStateTask;
+            windowsIdentity = authState.User.Identity as WindowsIdentity;
+        }
+    }
+}
